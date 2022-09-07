@@ -1,10 +1,7 @@
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import randtoken from 'rand-token';
-import getConfig from 'next/config';
 import { Schema, model, models } from 'mongoose';
-
-const { serverRuntimeConfig } = getConfig();
 
 const userSchema = new Schema({
     email: {
@@ -44,7 +41,9 @@ userSchema.pre('save', function (next) {
     if (!this.isModified('password')) return next();
 
     // const rounds = env === 'test' ? 1 : 9;
-    const rounds = serverRuntimeConfig.cryptoRounds;
+    // const rounds = serverRuntimeConfig.cryptoRounds;
+    const rounds = 1;
+    console.log(typeof process.env['CRYPTO_ROUNDS']);
 
     bcrypt.hash(this.password, rounds).then((hash) => {
         this.password = hash;

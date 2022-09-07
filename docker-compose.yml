@@ -1,6 +1,6 @@
 version: "3"
 services:
-  nefele_api:
+  nefele:
     container_name: nefele
     image: nefele/nefele
     restart: always

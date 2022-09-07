@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:lts
 
 RUN mkdir -p /nefele
 WORKDIR /nefele
