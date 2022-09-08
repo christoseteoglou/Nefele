@@ -7,20 +7,37 @@ export default apiHandler({
     post: authenticate
 });
 
+// async function authenticate(req, res) {
+//     const { email, password } = req.body;
+//     const user = await User.findOne({ email }).exec();
+//     console.log(user);
+//     console.log(user.password);
+//     console.log(password);
+//     console.log(bcrypt.compareSync(password, user.password));
+//     if (!(user && bcrypt.compareSync(password, user.password))) {
+//         throw 'Username or password is incorrect';
+//     }
+
+//     const token = jwtGen(user);
+
+//     return res.status(200).json({
+//         token
+//     });
+// }
+
 async function authenticate(req, res) {
     const { email, password } = req.body;
+
     const user = await User.findOne({ email }).exec();
-    console.log(user);
-    console.log(user.password);
-    console.log(password);
-    console.log(bcrypt.compareSync(password, user.password));
-    if (!(user && bcrypt.compareSync(password, user.password))) {
-        throw 'Username or password is incorrect';
+
+    if (!user) {
+        throw { name: 'UnauthorizedError' };
     }
 
-    const token = jwtGen(user);
-
-    return res.status(200).json({
-        token
-    });
+    if (await user.authenticate(password)) {
+        const token = jwtGen(user);
+        return res.status(200).json({ token, user: user.view(true) });
+    } else {
+        throw { name: 'UnauthorizedError' };
+    }
 }

@@ -12,6 +12,12 @@ const userSchema = new Schema({
         trim: true,
         lowercase: true
     },
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true
+    },
     password: {
         type: String,
         required: true,
@@ -37,55 +43,65 @@ userSchema.path('email').set(function (email) {
     return email;
 });
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', async function () {
     if (!this.isModified('password')) return next();
 
     // const rounds = env === 'test' ? 1 : 9;
     // const rounds = serverRuntimeConfig.cryptoRounds;
-    const rounds = 1;
-    console.log(typeof process.env['CRYPTO_ROUNDS']);
+    const rounds = +process.env['CRYPTO_ROUNDS'];
 
-    bcrypt.hash(this.password, rounds).then((hash) => {
-        this.password = hash;
-        next();
-    }).catch(next);
+    // bcrypt.hash(this.password, rounds).then((hash) => {
+    //     this.password = hash;
+    //     console.log('HASHING COMPLETE');
+    //     next();
+    // }).catch(next);
+
+    let hash = await bcrypt.hash(this.password, rounds);
+    this.password = hash;
+    console.log('HASHING COMPLETE');
+    return;
 });
 
 userSchema.methods = {
     view(full) {
-        let fields = ['id', 'picture'];
+        let fields = ['username', 'picture', 'createdAt', 'updatedAt'];
 
         if (full) {
-            fields = [...fields, 'email', 'createdAt'];
+            let protectedFields = ['_id', '__v', 'password'];
+
+            fields = Object.keys(JSON.parse(JSON.stringify(this))).filter(k => !protectedFields.includes(k));
         }
         const view = {};
 
         for (let f of fields) {
             view[f] = this[f];
         }
+
+        view.id = this._id;
         
         return view;
     },
 
-    authenticate(pass) {
-        return bcrypt.compare(pass, this.password).then((valid) => valid ? this : false);
+    async authenticate(pass) {
+        // return bcrypt.compare(pass, this.password).then((valid) => valid ? this : false);
+        return bcrypt.compare(pass, this.password);
     }
 }
 
-userSchema.statics = {
-    createFromService({ service, id, email, picture }) {
-        return this.findOne({ $or: [{ [`services.${service}`]: id}, { email }] }).then((user) => {
-            if (user) {
-                user.services[service] = id;
-                user.picture = picture;
-                return user.save();
-            } else {
-                const password = randtoken.generate(16);
-                return this.create({ services: { [service]: id }, email, password, picture });
-            }
-        });
-    }
-};
+// userSchema.statics = {
+//     createFromService({ service, id, email, picture }) {
+//         return this.findOne({ $or: [{ [`services.${service}`]: id}, { email }] }).then((user) => {
+//             if (user) {
+//                 user.services[service] = id;
+//                 user.picture = picture;
+//                 return user.save();
+//             } else {
+//                 const password = randtoken.generate(16);
+//                 return this.create({ services: { [service]: id }, email, password, picture });
+//             }
+//         });
+//     }
+// };
 
 const User = models.User || model('User', userSchema);
 
