@@ -5,6 +5,9 @@ services:
     image: nefele/nefele
     restart: always
     build: .
+    volumes:
+      - ./:/nefele
+      - /nefele/node_modules
     ports:
       - "3000:3000"
     links:
