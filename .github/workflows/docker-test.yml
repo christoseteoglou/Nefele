@@ -1,0 +1,15 @@
+name: 'Nefele Docker Build and Test'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build -t nefele .
+
+    - name: Run Tests
+      run: docker compose run npm run test:api
