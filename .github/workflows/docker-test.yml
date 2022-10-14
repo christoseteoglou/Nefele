@@ -1,4 +1,4 @@
-name: 'Nefele Docker Build and Test'
+name: 'Nefele Build and Test'
 
 on:
   workflow_dispatch:
@@ -7,9 +7,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build -t nefele .
-
-    - name: Run Tests
-      run: docker compose run nefele npm run test:api
+    - name: Git checkout
+      uses: actions/checkout@v3
+    
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+    
+    - name: Run Docker Compose test
+      run: docker-compose run -e JWT_SECRET=asdf -e MONGO_URI=mongodb://mongo:27017/nefele-test nefele npm run test:api
