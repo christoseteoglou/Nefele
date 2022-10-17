@@ -1,4 +1,12 @@
-import { connectMongo } from '../../helpers/api';
+import { connectMongo, closeMongo } from '../../helpers/api';
+
+beforeAll(done => {
+    done()
+});
+
+afterAll(done => {
+    closeMongo().then(done);
+});
 
 describe('MongoBD connection', () => {
     it('should connect', async () => {
