@@ -136,14 +136,14 @@ describe('/api/users/[id] API Endpoint', () => {
         expect(res._getJSONData()).toHaveProperty('id');
     });
 
-    it('should give a 404 error', async () => {
-        let queryID = (parseInt(meID, 16) - 5).toString(16);
-        const { req, res } = mockReqRes({ method: 'GET', url: '/api/users/'+queryID, query: { id: queryID}, headers: {
-            'Authorization': 'Bearer ' + token
-        }});
+//     it('should give a 404 error', async () => {
+//         let queryID = (parseInt(meID, 16) - 5).toString(16);
+//         const { req, res } = mockReqRes({ method: 'GET', url: '/api/users/'+queryID, query: { id: queryID}, headers: {
+//             'Authorization': 'Bearer ' + token
+//         }});
 
-        await getById(req, res);
+//         await getById(req, res);
 
-        expect(res.statusCode).toBe(404);
-    });
+//         expect(res.statusCode).toBe(404);
+//     });
 });
