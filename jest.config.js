@@ -6,7 +6,8 @@ const createJestConfig = nextJest({
 
 const customJestConfig = {
     moduleDirectories: ['node_modules', '<rootDir>/'],
-    globalTeardown: './tests/globalTeardown.js'
+    globalTeardown: './tests/globalTeardown.js',
+    maxWorkers: 2
 };
 
 module.exports = createJestConfig(customJestConfig);
