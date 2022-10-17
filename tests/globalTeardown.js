@@ -7,5 +7,5 @@ module.exports = async () => {
     await mongoose.connection.close();
 
     console.log('mongo closed');
-    process.exit(1);
+    return;
 };
