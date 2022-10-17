@@ -16,4 +16,4 @@ jobs:
         node-version: 16.x
     
     - name: Run Docker Compose test
-      run: docker-compose run -e JWT_SECRET=asdf -e MONGO_URI=mongodb://mongo:27017/nefele-test nefele npm run test:api
+      run: docker-compose run -e CI=true -e JWT_SECRET=asdf -e MONGO_URI=mongodb://mongo:27017/nefele-test nefele npm run test:api
