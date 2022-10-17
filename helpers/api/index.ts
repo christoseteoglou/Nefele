@@ -103,6 +103,10 @@ export function connectMongo(): Promise<typeof mongoose> {
 //     return mongoose.connect(process.env['MONGO_URI']);
 }
 
+export function closeMongo(): Promise<typeof mongoose> {
+    return mongoose.connection.close();
+}
+
 export function jwtGen(user) {
     if (!user) throw 'missing user';
 
