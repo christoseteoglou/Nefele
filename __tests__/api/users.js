@@ -3,7 +3,16 @@ import register from '../../pages/api/users/register';
 import authenticate from '../../pages/api/users/authenticate';
 import getById from '../../pages/api/users/[id]';
 import getMe from '../../pages/api/users/me';
+import { closeMongo } from '../../helpers/api';
 const chance = require('chance').Chance();
+
+beforeAll(done => {
+    done();
+});
+
+afterAll(done => {
+    closeMongo().then(done);
+});
 
 const userObj = {
     email: chance.email(),
