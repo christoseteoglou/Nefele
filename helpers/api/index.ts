@@ -97,7 +97,10 @@ async function authenticateJWT(req: CustomApiRequest, res: NextApiResponse) {
 }
 
 export function connectMongo(): Promise<typeof mongoose> {
-    return mongoose.connect(process.env['MONGO_URI']);
+    return mongoose.disconnect().then(() => {
+        return mongoose.connect(process.env['MONGO_URI']);
+    });
+//     return mongoose.connect(process.env['MONGO_URI']);
 }
 
 export function jwtGen(user) {
