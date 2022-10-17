@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "docker": "docker build -t nefele/nefele . && docker-compose up",
-    "test:api": "jest --coverage --detectOpenHandles"
+    "test:api": "jest --detectOpenHandles"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
